@@ -1,0 +1,18 @@
+<div class="report-widget">
+    <h3><?= e($this->property('title')) ?></h3>
+
+    <div>
+        <div
+            data-control="chart-line"
+            data-time-mode="weeks"
+            style="height: 200px"
+            data-chart-options="xaxis: {mode: 'time'}">
+            <span
+                data-chart="dataset"
+                data-set-color="#008dc9"
+                data-set-data="<?= $this->dataChart ?>"
+                data-set-name="Visits">
+            </span>
+        </div>
+    </div>
+</div>

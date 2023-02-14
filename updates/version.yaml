@@ -1,0 +1,8 @@
+1.0.1:
+    - First version of statistic
+    - create_pages_counters_table.php
+    - create_traffic_sources_table.php
+    - create_visitors_counters_table.php
+1.0.2:
+    - add title to top pages
+    - AddTitleToPageCountersTable.php
