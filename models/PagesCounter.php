@@ -22,7 +22,7 @@ class PagesCounter extends Model
     /**
      * @var array fillable attributes are mass assignable
      */
-    protected $fillable = ['page', 'count', 'title'];
+    protected $fillable = ['page', 'date', 'count', 'title'];
 
     /**
      * @var array rules for validation

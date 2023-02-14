@@ -51,16 +51,17 @@ class Tracking extends ComponentBase
     public function onRun()
     {
         if($this->property('top_pages')) {
+            $today = Carbon::today()->format('Y-m-d');
             $currentPageUrl = Request::path();
             if($currentPageUrl != '/')
                 $currentPageUrl = '/' . $currentPageUrl;
 
-            $currentPageCounter = PagesCounter::where('page', $currentPageUrl)->first();
+            $currentPageCounter = PagesCounter::where('page', $currentPageUrl)->where('date', $today)->first();
             if(is_null($currentPageCounter)) {
-
                 $themePage = $this->getCurrentPage();
                 PagesCounter::create([
                     'page' => $currentPageUrl,
+                    'date' => $today,
                     'title' => $themePage->title
                 ]);
             }
@@ -75,7 +76,7 @@ class Tracking extends ComponentBase
 
             $counter = VisitorsCounter::where('date', $today)->first();
             if(is_null($counter)) {
-                $counter = VisitorsCounter::create(['date' => $today]);
+                VisitorsCounter::create(['date' => $today]);
             }
             else {
                 $counter->update([

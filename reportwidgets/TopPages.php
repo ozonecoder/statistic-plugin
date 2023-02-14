@@ -1,6 +1,7 @@
 <?php namespace Ozc\Statistic\ReportWidgets;
 
 use Backend\Classes\ReportWidgetBase;
+use Carbon\Carbon;
 use Exception;
 use Ozc\Statistic\Models\PagesCounter;
 
@@ -34,6 +35,17 @@ class TopPages extends ReportWidgetBase
                 'default' => '5',
                 'type' => 'string',
                 'validationPattern' => '^[0-9]+$'
+            ],
+            'days' => [
+                'title' => 'Number of days',
+                'default' => '7',
+                'type' => 'string',
+                'validation' => [
+                    'regex' => [
+                        'message' => 'The days property can contain only numeric symbols.',
+                        'pattern' => '^[0-9]+$'
+                    ]
+                ]
             ]
         ];
     }
@@ -58,11 +70,21 @@ class TopPages extends ReportWidgetBase
      */
     public function prepareVars()
     {
+        $from = Carbon::today()->format('Y-m-d');
+        $to = Carbon::today()->subDays(intval($this->property('days')) - 1)->format('Y-m-d');
+
         $showPagesCount = $this->property('top_pages_count', 5);
 
-        $allCount = PagesCounter::sum('count');
-        $topPages = PagesCounter::orderBy('count', 'desc')->select('page', 'title', 'count')
-            ->take($showPagesCount)->get()->map(function ($item) use ($allCount) {
+        $allCount = PagesCounter::whereBetween('date', [$to, $from])->sum('count');
+        $topPages = PagesCounter::whereBetween('date', [$to, $from])
+            ->select('page', 'title' )
+            ->selectRaw('sum(count) as page_count')
+            ->groupBy('page', 'title')
+            ->orderBy('page_count', 'desc')
+            ->take($showPagesCount)
+            ->get()
+            ->map(function ($item) use ($allCount) {
+                $item->count = $item->page_count;
                 $item->percentage = number_format($item->count / $allCount * 100.0, 2);
                 return $item;
             });
