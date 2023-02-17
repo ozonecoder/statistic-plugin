@@ -62,7 +62,7 @@ class Tracking extends ComponentBase
                 PagesCounter::create([
                     'page' => $currentPageUrl,
                     'date' => $today,
-                    'title' => $themePage->title
+                    'title' => (isset($themePage->title)) ? $themePage->title : ''
                 ]);
             }
             else {
@@ -115,12 +115,11 @@ class Tracking extends ComponentBase
     }
 
     private function getCurrentPage() {
-        $url = Request::path();
+        $url = (isset($this->page->url)) ? $this->page->url : Request::path();
         $theme = Theme::getActiveTheme();
         $router = new Router($theme);
-        $currentPage = is_null($this->page->baseFileName)
-            ? $router->findByUrl($url) : Page::load($theme, $this->page->baseFileName);
 
-        return $currentPage;
+        return is_null($this->page->baseFileName)
+            ? $router->findByUrl($url) : Page::load($theme, $this->page->baseFileName);
     }
 }
