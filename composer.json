@@ -1,8 +1,27 @@
 {
     "name": "ozc/statistic-plugin",
     "type": "october-plugin",
-    "description": "No description provided yet...",
+    "description": "ozc Statistic plugin",
+    "keywords": ["october", "cms", "ozc statistic", "plugin"],
+    "authors": [
+        {
+            "name": "Ozonecoders | Pierre Otto",
+            "email": "pierre_otto@ozonecoders.de",
+            "role": "CEO"
+        }
+    ],
     "require": {
+        "php": ">=7.3",
         "composer/installers": "~1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ozc\\Seo\\": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
     }
 }
