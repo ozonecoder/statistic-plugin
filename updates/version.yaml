@@ -5,4 +5,7 @@
     - create_visitors_counters_table.php
 1.0.2:
     - add title to top pages
-    - AddTitleToPageCountersTable.php
+    - add_title_to_page_counters_table.php
+1.0.4:
+  - add date to top pages
+  - add_date_to_pages_counters_table.php

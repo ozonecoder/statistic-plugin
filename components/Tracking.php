@@ -51,17 +51,18 @@ class Tracking extends ComponentBase
     public function onRun()
     {
         if($this->property('top_pages')) {
+            $today = Carbon::today()->format('Y-m-d');
             $currentPageUrl = Request::path();
             if($currentPageUrl != '/')
                 $currentPageUrl = '/' . $currentPageUrl;
 
-            $currentPageCounter = PagesCounter::where('page', $currentPageUrl)->first();
+            $currentPageCounter = PagesCounter::where('page', $currentPageUrl)->where('date', $today)->first();
             if(is_null($currentPageCounter)) {
-
                 $themePage = $this->getCurrentPage();
                 PagesCounter::create([
                     'page' => $currentPageUrl,
-                    'title' => $themePage->title
+                    'date' => $today,
+                    'title' => (isset($themePage->title)) ? $themePage->title : ''
                 ]);
             }
             else {
@@ -75,7 +76,7 @@ class Tracking extends ComponentBase
 
             $counter = VisitorsCounter::where('date', $today)->first();
             if(is_null($counter)) {
-                $counter = VisitorsCounter::create(['date' => $today]);
+                VisitorsCounter::create(['date' => $today]);
             }
             else {
                 $counter->update([
@@ -114,12 +115,11 @@ class Tracking extends ComponentBase
     }
 
     private function getCurrentPage() {
-        $url = Request::path();
+        $url = (isset($this->page->url)) ? $this->page->url : Request::path();
         $theme = Theme::getActiveTheme();
         $router = new Router($theme);
-        $currentPage = is_null($this->page->baseFileName)
-            ? $router->findByUrl($url) : Page::load($theme, $this->page->baseFileName);
 
-        return $currentPage;
+        return is_null($this->page->baseFileName)
+            ? $router->findByUrl($url) : Page::load($theme, $this->page->baseFileName);
     }
 }
